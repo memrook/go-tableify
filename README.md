@@ -12,7 +12,7 @@ Make sure you have a working Go environment. Follow the [Go install instructions
 To install `go-tableify`, simply run:
 
 ```
-go get github.com/subchen/go-tableify
+go get github.com/memrook/go-tableify
 ```
 
 ## Example

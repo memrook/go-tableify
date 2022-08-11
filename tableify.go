@@ -1,4 +1,4 @@
-package tableify
+package tablefy
 
 import (
 	"fmt"
@@ -78,7 +78,7 @@ func (t *Table) SetHeadersFromStruct(obj interface{}) {
 					width = 0
 				} else {
 					width, err = strconv.Atoi(parts[1])
-					if err != nil{
+					if err != nil {
 						panic(fmt.Errorf("width is not an integer: %s", parts[1], err.Error()))
 					}
 				}
@@ -229,6 +229,62 @@ func (t *Table) Print() {
 	if len(t.rows) == 0 && len(t.EmptyText) > 0 {
 		fmt.Println(t.EmptyText)
 	}
+}
+
+func (t *Table) ToString() string {
+	fullwidth := 0
+	fullformat := ""
+
+	realwidths := make([]int, len(t.headers))
+
+	// calc realwidths for each column
+	for _, row := range t.rows {
+		for i, v := range row {
+			if realwidths[i] < len(v) {
+				realwidths[i] = len(v)
+			}
+			if realwidths[i] < len(t.headers[i]) {
+				realwidths[i] = len(t.headers[i])
+			}
+			if realwidths[i] < t.minwidths[i] {
+				realwidths[i] = t.minwidths[i]
+			}
+		}
+	}
+
+	for i, w := range realwidths {
+		margin := t.Margin
+		if i == len(realwidths)-1 {
+			margin = 0 // no margin for last column
+		}
+		fullformat += "%-" + strconv.FormatInt(int64(w), 10) + "s" + strings.Repeat(" ", margin)
+		fullwidth += w + margin
+	}
+	fullformat += "\n"
+
+	var stringArray string
+	stringArray = "```\n"
+	// print headers
+	stringArray += fmt.Sprintf(fullformat, asInterfaces(t.headers)...)
+
+	// print split line
+	if t.SplitLine {
+		stringArray += strings.Repeat("-", int(fullwidth))
+		stringArray += "\n"
+	}
+
+	// print rows
+	for _, row := range t.rows {
+		stringArray += fmt.Sprintf(fullformat, asInterfaces(row)...)
+	}
+
+	// print empty text if no rows
+	if len(t.rows) == 0 && len(t.EmptyText) > 0 {
+		stringArray += t.EmptyText
+	}
+	stringArray += "```"
+
+	return stringArray
 }
 
 func format(header string, value interface{}) string {

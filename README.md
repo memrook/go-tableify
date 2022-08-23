@@ -23,7 +23,7 @@ go get github.com/memrook/go-tableify
 package main
 
 import (
-	"github.com/subchen/go-tableify"
+	"github.com/memrook/go-tableify"
 )
 
 func main() {

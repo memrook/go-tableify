@@ -45,7 +45,7 @@ func main() {
 package main
 
 import (
-	"github.com/subchen/go-tableify"
+	"github.com/memrook/go-tableify"
 )
 
 type Repo struct {

@@ -1,4 +1,4 @@
-package tablefy
+package tableify
 
 import (
 	"fmt"
